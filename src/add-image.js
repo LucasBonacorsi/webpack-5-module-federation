@@ -1,4 +1,4 @@
-import cat from './cat.jpg'
+
 import altText from './altText.txt';
 
 function addImage() {

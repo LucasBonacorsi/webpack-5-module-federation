@@ -4,9 +4,12 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
-  entry: "./src/index.js",
+  entry: {
+    'hello-world': './src/hello-world.js',
+    'cat':'./src/cat.js'
+  },
   output: {
-    filename: "bundle.js",
+    filename: "[name].bundle.js",
     path: path.resolve(__dirname, "./dist"),
     publicPath: "",
   },
@@ -68,17 +71,22 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "styles.[contenthash].css",
+      filename: "[name].[contenthash].css",
     }),
-    new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: [
-        "**/*",
-      ],
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      filename: 'hello-world.html',
+      chunks: ['hello-world'],
+      title: "Webpack testing",
+      template: "src/page-template.hbs",
+      description: "Hello world",
     }),
     new HtmlWebpackPlugin({
-      title: "Webpack testing",
-      template: "src/index.hbs",
-      description: "Some description",
+      filename: 'cat.html',
+      chunks: ['cat'],
+      title: "Cat",
+      template: "src/page-template.hbs",
+      description: "Hello world",
     }),
   ],
 };
