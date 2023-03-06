@@ -2,11 +2,10 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { ModuleFederationPlugin } = require('webpack').container;
+
 module.exports = {
-  entry: {
-    'hello-world': './src/hello-world.js',
-    'cat':'./src/cat.js'
-  },
+  entry:'./src/cat.js',
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "./dist"),
@@ -16,12 +15,12 @@ module.exports = {
   mode: "development",
 
   devServer: {
-    port: 9000,
+    port: 9002,
     static: {
       directory: path.resolve(__dirname, "./dist")
     },
     devMiddleware: {
-      index: 'index.html',
+      index: 'cat.html',
       writeToDisk: true
     }
   },
@@ -39,14 +38,6 @@ module.exports = {
             maxSize: 3 * 1024,
           },
         },
-      },
-      {
-        test: /\.txt/,
-        type: "asset/source",
-      },
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
         test: /\.scss$/,
@@ -74,18 +65,16 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      filename: 'hello-world.html',
-      chunks: ['hello-world'],
-      title: "Webpack testing",
-      template: "src/page-template.hbs",
-      description: "Hello world",
-    }),
-    new HtmlWebpackPlugin({
       filename: 'cat.html',
-      chunks: ['cat'],
       title: "Cat",
       template: "src/page-template.hbs",
-      description: "Hello world",
+      description: "Cat page",
     }),
+    new ModuleFederationPlugin({
+      name: 'CatApp',
+      remotes: {
+        HelloWorldApp: 'HelloWorldApp@http://localhost:9001/remoteEntry.js'
+      }
+    })
   ],
 };

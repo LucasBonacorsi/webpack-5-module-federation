@@ -1,5 +1,5 @@
 import Cat from './cat.jpg'
-import './cat-image.css';
+import './cat-image.scss';
 
 export default class CatImage {
     render() {
